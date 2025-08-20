@@ -1,0 +1,33 @@
+name: Discord Bot
+on:
+  schedule:
+    # Ação será executada a cada 5 minutos
+    - cron: '*/5 * * * *'
+jobs:
+  bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Create users.json file
+        run: |
+          touch usuarios.json
+          echo "{}" > usuarios.json
+          echo "Created users.json file"
+
+      - name: Run Bot
+        run: node main.js
+        env:
+          DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+          FACEIT_API_KEY: ${{ secrets.FACEIT_API_KEY }}
+          CANAL_RANKING: ${{ secrets.CANAL_RANKING }}
+          CANAL_MENSAGENS: ${{ secrets.CANAL_MENSAGENS }}
