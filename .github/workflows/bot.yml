@@ -31,3 +31,4 @@ jobs:
           FACEIT_API_KEY: ${{ secrets.FACEIT_API_KEY }}
           CANAL_RANKING: ${{ secrets.CANAL_RANKING }}
           CANAL_MENSAGENS: ${{ secrets.CANAL_MENSAGENS }}
+          
