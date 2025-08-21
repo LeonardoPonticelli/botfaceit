@@ -2,8 +2,10 @@ name: Discord Bot
 
 on:
   schedule:
-    - cron: "*/355 * * * *"   # a cada 355 minutos (~5h55min)
-  workflow_dispatch:          # permite rodar manualmente também
+    # Roda a cada 355 minutos (~5h55min)
+    - cron: "*/355 * * * *"
+  # Permite rodar manualmente
+  workflow_dispatch:
 
 concurrency:
   group: discord-bot
@@ -14,7 +16,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          # A nova versão é mais segura e o 'persist-credentials' é útil para o push
+          persist-credentials: true
+          # Garante que o bot tenha o histórico completo, o que é útil para evitar erros
+          fetch-depth: 0
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -31,3 +38,17 @@ jobs:
           FACEIT_API_KEY: ${{ secrets.FACEIT_API_KEY }}
           CANAL_RANKING: ${{ secrets.CANAL_RANKING }}
           CANAL_MENSAGENS: ${{ secrets.CANAL_MENSAGENS }}
+
+      - name: Configure Git
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Commit and Push changes
+        run: |
+          # Adiciona todos os arquivos alterados ou criados pelo bot
+          git add .
+          # Cria um commit com uma mensagem padrão, mas não falha se não houver mudanças
+          git commit -m "Bot: Atualizando dados" || echo "No changes to commit"
+          # Envia as alterações para o repositório
+          git push
